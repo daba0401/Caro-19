@@ -1,8 +1,3 @@
-"""
-Core constants for Caro19
-Các hằng số dùng chung trong core game
-"""
-
 # GAME MODES
 
 MODE_PVP = "PVP"   # Người vs Người

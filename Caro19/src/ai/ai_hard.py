@@ -49,7 +49,7 @@ class AIHard(AIBase):
         if mv:
             return mv
 
-        # 2) SEARCH (iterative deepening within time limit)
+        # 2) SEARCH
         root_moves = self._generate_candidates(board, me, opp)
         if not root_moves:
             return self._first_empty(board)
@@ -76,12 +76,12 @@ class AIHard(AIBase):
         if w:
             return w
 
-        # 2) Block opponent win now  (NO validation!)
+        # 2) Block opponent win now
         b = self._find_winning_move(board, opp)
         if b:
             return b
 
-        # 3) Block opponent OPEN-FOUR (NO validation!)
+        # 3) Block opponent OPEN-FOUR
         block_open4 = self._find_open_four_move(board, opp)
         if block_open4:
             return block_open4
@@ -100,7 +100,7 @@ class AIHard(AIBase):
         if block_d3 and self._defense_valid(board, block_d3, me, opp):
             return block_d3
 
-        # 6) Create CLOSED-FOUR / DOUBLE-THREE (tấn công)
+        # 6) Create CLOSED-FOUR / DOUBLE-THREE
         make_cf = self._find_closed_four_move(board, me)
         if make_cf:
             return make_cf
@@ -109,7 +109,7 @@ class AIHard(AIBase):
         if make_d3:
             return make_d3
 
-        # 7) Counter-threat (ép ngược) – nếu có
+        # 7) Counter-threat
         ct = self._best_counter_threat(board, me, opp)
         if ct:
             return ct
@@ -118,14 +118,8 @@ class AIHard(AIBase):
 
     # DEFENSIVE VALIDATION
     def _defense_valid(self, board, move: Tuple[int, int], me: str, opp: str) -> bool:
-        """
-        Dùng cho các nước block "mơ hồ" (closed-four/double3).
-        Sau khi me đi, nếu opp có:
-        - thắng ngay
-        - tạo open-four
-        - tạo double open-three
-        => nước block này là vô nghĩa.
-        """
+
+        #Dùng cho các nước block mơ hồ
         r, c = move
         if board.grid[r][c] is not None:
             return False
@@ -154,9 +148,8 @@ class AIHard(AIBase):
 
     # COUNTER THREAT
     def _best_counter_threat(self, board, me: str, opp: str) -> Optional[Tuple[int, int]]:
-        """
-        Nếu không có rule bắt buộc, ưu tiên tạo đe doạ khiến đối thủ phải thủ.
-        """
+        # Nếu không có rule bắt buộc, ưu tiên tạo đe doạ khiến đối thủ phải thủ.
+
         best = None
         best_score = -1
 
@@ -167,7 +160,7 @@ class AIHard(AIBase):
             board.grid[r][c] = me
 
             score = 0
-            # tạo open-four => cực mạnh
+            # tạo open-four
             if self._is_open_four(board, r, c, me):
                 score += 1000
             # double open-three
@@ -207,7 +200,7 @@ class AIHard(AIBase):
             score = self._alphabeta(board, depth - 1, alpha, beta, False, me, opp)
             board.grid[r][c] = None
 
-            # safety (không bao giờ để inf lọt ra)
+            # safety
             if score == math.inf:
                 score = WIN_SCORE
             elif score == -math.inf:
@@ -282,10 +275,8 @@ class AIHard(AIBase):
 
     # EVALUATION
     def _evaluate(self, board, me: str, opp: str) -> int:
-        """
-        Evaluation nhanh nhưng ưu tiên đúng threat:
-        open4 > closed4 > double3 > open3 > open2...
-        """
+
+        #ưu tiên đúng threat:mpen4 > closed4 > double3 > open3 > open2...
         return self._pattern_score(board, me) - self._pattern_score(board, opp)
 
     def _pattern_score(self, board, sym: str) -> int:
@@ -295,7 +286,7 @@ class AIHard(AIBase):
                 if board.grid[r][c] != sym:
                     continue
                 for dr, dc in DIRECTIONS:
-                    # chỉ tính nếu là đầu chuỗi theo hướng (tránh đếm đôi)
+                    # chỉ tính nếu là đầu chuỗi theo hướng
                     pr, pc = r - dr, c - dc
                     if board.is_inside(pr, pc) and board.grid[pr][pc] == sym:
                         continue
@@ -341,12 +332,6 @@ class AIHard(AIBase):
         return [(r, c) for _, r, c in scored]
 
     def _quick_score(self, board, r: int, c: int, me: str, opp: str) -> int:
-        """
-        Move ordering mạnh:
-        - thắng/chặn thắng
-        - open4/closed4/double3
-        - center bonus
-        """
         score = 0
         score += self._center_bonus(board, r, c)
 

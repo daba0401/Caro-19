@@ -1,7 +1,3 @@
-"""
-Guide screen for Caro19
-Màn hình hướng dẫn chơi
-"""
 
 import pygame
 
@@ -35,11 +31,6 @@ def draw_button(screen, rect, text, font, mouse_pos):
 
 
 def show_guide(screen):
-    """
-    Hiển thị màn hình hướng dẫn
-    Nhấn 'Quay lại' để trở về menu chính
-    """
-
     clock = pygame.time.Clock()
 
     title_font = pygame.font.Font(FONT_NAME, FONT_SIZE_TITLE)

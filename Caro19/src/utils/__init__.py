@@ -1,7 +1,3 @@
-"""
-Utilities package for Caro19
-Chứa các hàm tiện ích dùng chung (UI, tọa độ, text, v.v.)
-"""
 
 from .helpers import (
     clamp,

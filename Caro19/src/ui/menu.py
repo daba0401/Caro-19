@@ -1,7 +1,3 @@
-"""
-Main menu UI for Caro19
-Menu chính: Chơi - Hướng dẫn - Thoát
-"""
 
 import pygame
 

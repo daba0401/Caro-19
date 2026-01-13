@@ -1,7 +1,3 @@
-"""
-Normal AI for Caro19
-AI mức Bình thường: tấn công + phòng thủ bằng heuristic
-"""
 
 import random
 from src.ai.ai_base import AIBase
@@ -21,25 +17,24 @@ class AINormal(AIBase):
         1. Nếu có thể thắng → đánh ngay
         2. Nếu đối thủ sắp thắng → chặn
         3. Đánh ô có điểm heuristic cao nhất
-        4. Có xác suất random nhỏ để tránh cứng nhắc
         """
 
         opponent = self.get_opponent_symbol()
 
-        # 1️⃣ Thắng ngay nếu có thể
+        #  Thắng ngay nếu có thể
         win_move = self._find_winning_move(board, self.symbol)
         if win_move:
             return win_move
 
-        # 2️⃣ Chặn đối thủ
+        # Chặn đối thủ
         block_move = self._find_winning_move(board, opponent)
         if block_move:
             return block_move
 
-        # 3️⃣ Đánh theo heuristic
+        # Đánh theo heuristic
         best_move = self._heuristic_move(board)
 
-        # 4️⃣ Random nhẹ
+        # Random nhẹ
         if random.random() < NORMAL_RANDOM_RATE:
             return self._random_move(board)
 
@@ -79,9 +74,7 @@ class AINormal(AIBase):
         return self._random_move(board)
 
     def _evaluate_position(self, board, row, col):
-        """
-        Chấm điểm ô (row, col)
-        """
+        #Chấm điểm ô (row, col)
         attack_score = self._count_max_chain(board, row, col, self.symbol)
         defense_score = self._count_max_chain(board, row, col, self.get_opponent_symbol())
 
@@ -91,9 +84,7 @@ class AINormal(AIBase):
         )
 
     def _count_max_chain(self, board, row, col, symbol):
-        """
-        Đếm chuỗi dài nhất nếu đặt symbol tại (row, col)
-        """
+        #Đếm chuỗi dài nhất nếu đặt symbol tại (row, col)
         directions = [
             (0, 1),
             (1, 0),

@@ -1,16 +1,6 @@
-"""
-Player class for Caro19
-Đại diện cho người chơi hoặc AI
-"""
-
 
 class Player:
     def __init__(self, symbol, is_ai=False, name=None):
-        """
-        symbol: 'X' hoặc 'O'
-        is_ai: True nếu là máy
-        name: tên người chơi (tuỳ chọn)
-        """
         self.symbol = symbol
         self.is_ai = is_ai
         self.name = name if name else self._default_name()

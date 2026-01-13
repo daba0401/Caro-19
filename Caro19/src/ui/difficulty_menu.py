@@ -31,7 +31,7 @@ from src.core.constants import (
 
 
 def draw_button(screen, rect, text, font, mouse_pos):
-    """Vẽ nút bấm"""
+    #Vẽ nút bấm
     color = BUTTON_HOVER_COLOR if rect.collidepoint(mouse_pos) else BUTTON_COLOR
     pygame.draw.rect(screen, color, rect, border_radius=BUTTON_BORDER_RADIUS)
 

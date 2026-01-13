@@ -1,8 +1,3 @@
-"""
-Play mode selection menu for Caro19
-Menu chọn chế độ chơi: PvP / PvE
-"""
-
 import pygame
 
 from config.ui_config import (

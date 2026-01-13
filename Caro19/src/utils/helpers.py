@@ -1,34 +1,23 @@
-"""
-Helper functions for Caro19
-- UI helpers: vẽ text, button, wrap text
-- Board helpers: chuyển đổi tọa độ chuột <-> ô bàn cờ
-"""
 
 import pygame
 
 
-# =========================
 # BASIC HELPERS
-# =========================
 def clamp(value, min_value, max_value):
-    """Giới hạn value trong [min_value, max_value]."""
+    #Giới hạn value trong [min_value, max_value].
     return max(min_value, min(value, max_value))
 
 
 def point_in_rect(point, rect: pygame.Rect):
-    """Kiểm tra một điểm (x, y) có nằm trong rect không."""
+    #Kiểm tra một điểm (x, y) có nằm trong rect không.
     x, y = point
     return rect.collidepoint(x, y)
 
 
-# =========================
+
 # TEXT HELPERS
-# =========================
 def draw_text_center(screen, text, font, color, center):
-    """
-    Vẽ text căn giữa tại vị trí center (x, y).
-    Trả về rect của text (để debug/click nếu cần).
-    """
+    #Vẽ text căn giữa tại vị trí center (x, y).
     surf = font.render(text, True, color)
     rect = surf.get_rect(center=center)
     screen.blit(surf, rect)
@@ -36,10 +25,9 @@ def draw_text_center(screen, text, font, color, center):
 
 
 def draw_text(screen, text, font, color, topleft):
-    """
-    Vẽ text tại góc trên trái topleft (x, y).
-    Trả về rect của text.
-    """
+
+    #Vẽ text tại góc trên trái topleft (x, y).
+
     surf = font.render(text, True, color)
     rect = surf.get_rect(topleft=topleft)
     screen.blit(surf, rect)
@@ -47,10 +35,8 @@ def draw_text(screen, text, font, color, topleft):
 
 
 def wrap_text(text, font, max_width):
-    """
-    Tự xuống dòng cho text để không vượt quá max_width (pixel).
-    Trả về list các dòng (strings).
-    """
+
+    #Tự xuống dòng cho text để không vượt quá max_width (pixel).
     words = text.split(" ")
     if not words:
         return [""]
@@ -70,11 +56,10 @@ def wrap_text(text, font, max_width):
     return lines
 
 
-# =========================
+
 # BUTTON HELPERS
-# =========================
 def make_button_rect(screen_width, x_center, y, width, height):
-    """Tạo rect của button theo tâm x."""
+    #Tạo rect của button theo tâm x.
     return pygame.Rect(
         x_center - width // 2,
         y,
@@ -94,10 +79,7 @@ def draw_button(
     mouse_pos,
     border_radius=0
 ):
-    """
-    Vẽ button có hover.
-    Trả về True nếu đang hover, False nếu không.
-    """
+
     is_hover = rect.collidepoint(mouse_pos)
     color = hover_color if is_hover else normal_color
 
@@ -107,14 +89,13 @@ def draw_button(
     return is_hover
 
 
-# =========================
+
 # BOARD COORDINATE HELPERS
-# =========================
+
 def mouse_to_cell(mouse_pos, board_margin, cell_size, rows, cols):
-    """
-    Chuyển tọa độ chuột (x, y) -> (row, col) trên bàn cờ.
-    Trả về (row, col) hoặc (None, None) nếu click ngoài bàn.
-    """
+
+    #Chuyển tọa độ chuột (x, y) -> (row, col) trên bàn cờ.
+
     x, y = mouse_pos
 
     x -= board_margin
@@ -133,9 +114,8 @@ def mouse_to_cell(mouse_pos, board_margin, cell_size, rows, cols):
 
 
 def cell_to_pixel(row, col, board_margin, cell_size):
-    """
-    Chuyển (row, col) -> tọa độ pixel góc trên-trái của ô.
-    """
+
+    #Chuyển (row, col) -> tọa độ pixel góc trên-trái của ô.
     x = board_margin + col * cell_size
     y = board_margin + row * cell_size
     return x, y

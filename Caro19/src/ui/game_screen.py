@@ -34,18 +34,14 @@ class GameScreen:
 
         self._calculate_layout()
 
-    # =========================
     # GAME CONTROL
-    # =========================
     def _new_game(self):
         self.game = Game(self.mode, self.ai_level)
         self.last_move = None
         self.ai_thinking = False
         self.player_just_moved = False
 
-    # =========================
     # LAYOUT
-    # =========================
     def _calculate_layout(self):
         board_area_w = SCREEN_WIDTH - self.SIDE_PANEL_WIDTH - self.PADDING * 3
         board_area_h = SCREEN_HEIGHT - self.HUD_HEIGHT - self.PADDING * 2
@@ -63,9 +59,7 @@ class GameScreen:
         self.panel_y = self.board_y
         self.panel_h = self.board_size
 
-    # =========================
     # MAIN LOOP
-    # =========================
     def run(self):
         while True:
             self.clock.tick(60)
@@ -84,9 +78,7 @@ class GameScreen:
 
             pygame.display.flip()
 
-    # =========================
     # BUTTONS
-    # =========================
     def _create_buttons(self):
         y = self.panel_y + 40
 
@@ -107,9 +99,7 @@ class GameScreen:
             44
         )
 
-    # =========================
     # EVENTS
-    # =========================
     def _handle_events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -137,9 +127,7 @@ class GameScreen:
 
         return None
 
-    # =========================
     # UNDO
-    # =========================
     def _handle_undo(self):
         if self.mode == MODE_PVE:
             self.game.undo()
@@ -151,9 +139,7 @@ class GameScreen:
         self.ai_thinking = False
         self.player_just_moved = False
 
-    # =========================
     # BOARD CLICK
-    # =========================
     def _handle_board_click(self, pos):
         mx, my = pos
         col = (mx - self.board_x) // self.cell_size
@@ -164,9 +150,7 @@ class GameScreen:
                 self.last_move = (row, col)
                 self.player_just_moved = True
 
-    # =========================
     # AI MOVE
-    # =========================
     def _ai_move(self):
         # Frame ngay sau khi người chơi đánh → chỉ render
         if self.player_just_moved:
@@ -194,9 +178,7 @@ class GameScreen:
 
         self.ai_thinking = False
 
-    # =========================
     # DRAW
-    # =========================
     def _draw(self):
         self._draw_hud()
         self._draw_board()
