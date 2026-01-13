@@ -1,5 +1,4 @@
 """
-Easy AI for Caro19 (Improved)
 AI mức Dễ:
 - Biết thắng nếu có thể
 - Biết chặn người chơi
@@ -44,10 +43,6 @@ class AIEasy(AIBase):
     # WIN / BLOCK LOGIC
 
     def _find_winning_move(self, board, symbol):
-        """
-        Thử đặt symbol vào từng ô trống,
-        nếu thắng → trả về ô đó
-        """
         for row in range(board.rows):
             for col in range(board.cols):
                 if board.is_empty(row, col):
@@ -60,9 +55,7 @@ class AIEasy(AIBase):
 
     # NEAR MOVE
     def _find_near_move(self, board):
-        """
-        Chọn ô trống gần quân đã có (bán kính 1)
-        """
+        #Chọn ô trống gần quân đã có (bán kính 1)
         candidates = set()
 
         for row in range(board.rows):

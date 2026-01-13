@@ -5,7 +5,7 @@ AI mức Bình thường: tấn công + phòng thủ bằng heuristic
 
 import random
 from src.ai.ai_base import AIBase
-from config.game_config import WIN_CONDITION
+
 from config.ai_config import (
     NORMAL_ATTACK_WEIGHT,
     NORMAL_DEFENSE_WEIGHT,

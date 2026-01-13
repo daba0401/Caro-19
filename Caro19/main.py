@@ -26,9 +26,6 @@ from src.ui.guide import show_guide
 from src.ui.game_screen import game_screen
 
 
-
-# INIT PYGAME
-
 def init_pygame():
     pygame.init()
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -37,8 +34,6 @@ def init_pygame():
     return screen, clock
 
 
-
-# MAIN LOOP
 def main():
     screen, clock = init_pygame()
     running = True
@@ -46,46 +41,30 @@ def main():
     while running:
         clock.tick(FPS)
 
-        # MAIN MENU
         action = main_menu(screen)
 
-        # PLAY
         if action == ACTION_PLAY:
             mode = play_menu(screen)
 
-            #PvP
             if mode == ACTION_PVP:
-                result = game_screen(
-                    screen,
-                    mode=ACTION_PVP
-                )
-
+                result = game_screen(screen, mode=ACTION_PVP)
                 if result == "QUIT":
                     running = False
 
-            #PvE
             elif mode == ACTION_PVE:
                 level = difficulty_menu(screen)
-
                 if level in (ACTION_EASY, ACTION_NORMAL, ACTION_HARD):
                     result = game_screen(
                         screen,
                         mode=ACTION_PVE,
                         ai_level=level
                     )
-
                     if result == "QUIT":
                         running = False
 
-            # Quay lại menu chính
-            continue
-
-        # GUIDE
         elif action == ACTION_GUIDE:
             show_guide(screen)
-            continue
 
-        # EXIT
         elif action == ACTION_EXIT:
             running = False
 
@@ -93,6 +72,6 @@ def main():
     sys.exit()
 
 
-# ENTRY POINT
+# 🚨 DÒNG NÀY BẮT BUỘC PHẢI CÓ
 if __name__ == "__main__":
     main()

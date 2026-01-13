@@ -26,7 +26,6 @@ class Game:
         self.ai_level = ai_level
 
         self.board = Board()
-
         self.player_x = Player(SYMBOL_X)
         self.player_o = Player(SYMBOL_O)
 
@@ -36,7 +35,9 @@ class Game:
 
         self.reset()
 
+    # =========================
     # INIT AI
+    # =========================
     def _init_ai(self):
         if self.ai_level == "EASY":
             self.ai = AIEasy(SYMBOL_O)
@@ -58,31 +59,35 @@ class Game:
         self.win_cells = None
         self.last_move = None
 
-        # ===== TIME CONTROL =====
         self.time_left = {
             SYMBOL_X: PLAYER_TIME_LIMIT,
             SYMBOL_O: PLAYER_TIME_LIMIT,
         }
+
+        # ⏱️ MỐC DUY NHẤT
         self.last_tick = time.time()
 
-        # ===== UNDO / REDO =====
         self.move_history = []
         self.redo_stack = []
 
     # =========================
-    # TIME UPDATE
+    # TIME UPDATE (FRAME-BASED)
     # =========================
     def update_time(self):
-        """Cập nhật đồng hồ cho người đang đi"""
-        if not ENABLE_TIME_CONTROL:
-            return
-
-        if self.game_over:
+        """
+        Hàm này PHẢI được gọi mỗi frame (GameScreen đã làm đúng).
+        Nó CHỈ trừ thời gian cho người đang đi.
+        """
+        if not ENABLE_TIME_CONTROL or self.game_over:
             return
 
         now = time.time()
         elapsed = now - self.last_tick
         self.last_tick = now
+
+        # ⛔ AI KHÔNG DÙNG FRAME TIME
+        if self.mode == MODE_PVE and self.current_player == SYMBOL_O:
+            return
 
         self.time_left[self.current_player] -= elapsed
 
@@ -92,7 +97,7 @@ class Game:
             self.winner = SYMBOL_O if self.current_player == SYMBOL_X else SYMBOL_X
 
     # =========================
-    # SAVE STATE (UNDO / REDO)
+    # SAVE STATE
     # =========================
     def _save_state(self, row, col, symbol):
         self.move_history.append({
@@ -132,19 +137,30 @@ class Game:
         return True
 
     # =========================
-    # AI MOVE
+    # AI MOVE (REAL TIME)
     # =========================
     def ai_move(self):
-        if self.game_over:
+        if (
+            self.game_over
+            or self.mode != MODE_PVE
+            or self.ai is None
+            or self.current_player != SYMBOL_O
+        ):
             return False
 
-        if self.mode != MODE_PVE or self.ai is None:
-            return False
-
-        if self.current_player != SYMBOL_O:
-            return False
-
+        # ⏱️ ĐO THỜI GIAN AI SUY NGHĨ THẬT
+        start = time.time()
         row, col = self.ai.get_move(self.board)
+        think_time = time.time() - start
+
+        if ENABLE_TIME_CONTROL:
+            self.time_left[SYMBOL_O] -= think_time
+            if self.time_left[SYMBOL_O] <= 0:
+                self.time_left[SYMBOL_O] = 0
+                self.game_over = True
+                self.winner = SYMBOL_X
+                return False
+
         if row is None:
             return False
 
@@ -176,6 +192,7 @@ class Game:
         self.current_player = (
             SYMBOL_O if self.current_player == SYMBOL_X else SYMBOL_X
         )
+        # ⏱️ RESET MỐC DUY NHẤT KHI ĐỔI LƯỢT
         self.last_tick = time.time()
 
     # =========================
@@ -196,7 +213,6 @@ class Game:
         self.game_over = False
         self.winner = None
         self.win_cells = None
-
         return True
 
     def redo(self):
@@ -212,12 +228,10 @@ class Game:
         )
         self.last_move = (state["row"], state["col"])
         self.last_tick = time.time()
-
         return True
 
     # =========================
     # IN-GAME EXIT
     # =========================
     def can_exit_game(self):
-        """Core check cho phép thoát khi đang chơi"""
         return ENABLE_IN_GAME_EXIT

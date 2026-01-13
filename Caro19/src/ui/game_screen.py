@@ -34,14 +34,18 @@ class GameScreen:
 
         self._calculate_layout()
 
+    # =========================
     # GAME CONTROL
+    # =========================
     def _new_game(self):
         self.game = Game(self.mode, self.ai_level)
         self.last_move = None
         self.ai_thinking = False
         self.player_just_moved = False
 
+    # =========================
     # LAYOUT
+    # =========================
     def _calculate_layout(self):
         board_area_w = SCREEN_WIDTH - self.SIDE_PANEL_WIDTH - self.PADDING * 3
         board_area_h = SCREEN_HEIGHT - self.HUD_HEIGHT - self.PADDING * 2
@@ -59,13 +63,15 @@ class GameScreen:
         self.panel_y = self.board_y
         self.panel_h = self.board_size
 
+    # =========================
     # MAIN LOOP
+    # =========================
     def run(self):
         while True:
             self.clock.tick(60)
             self.screen.fill((18, 28, 38))
 
-            # ⏱️ LUÔN cập nhật thời gian (QUAN TRỌNG)
+            # ⏱️ CHỈ GỌI – KHÔNG CAN THIỆP
             self.game.update_time()
 
             self._create_buttons()
@@ -78,7 +84,9 @@ class GameScreen:
 
             pygame.display.flip()
 
+    # =========================
     # BUTTONS
+    # =========================
     def _create_buttons(self):
         y = self.panel_y + 40
 
@@ -99,7 +107,9 @@ class GameScreen:
             44
         )
 
+    # =========================
     # EVENTS
+    # =========================
     def _handle_events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -127,7 +137,9 @@ class GameScreen:
 
         return None
 
+    # =========================
     # UNDO
+    # =========================
     def _handle_undo(self):
         if self.mode == MODE_PVE:
             self.game.undo()
@@ -139,7 +151,9 @@ class GameScreen:
         self.ai_thinking = False
         self.player_just_moved = False
 
+    # =========================
     # BOARD CLICK
+    # =========================
     def _handle_board_click(self, pos):
         mx, my = pos
         col = (mx - self.board_x) // self.cell_size
@@ -150,9 +164,11 @@ class GameScreen:
                 self.last_move = (row, col)
                 self.player_just_moved = True
 
+    # =========================
     # AI MOVE
+    # =========================
     def _ai_move(self):
-        # Frame sau khi player đánh → chỉ render
+        # Frame ngay sau khi người chơi đánh → chỉ render
         if self.player_just_moved:
             self.player_just_moved = False
             return
@@ -178,7 +194,9 @@ class GameScreen:
 
         self.ai_thinking = False
 
+    # =========================
     # DRAW
+    # =========================
     def _draw(self):
         self._draw_hud()
         self._draw_board()
@@ -190,40 +208,63 @@ class GameScreen:
         return f"{seconds // 60:02}:{seconds % 60:02}"
 
     def _draw_hud(self):
-        pygame.draw.rect(self.screen, (15, 25, 35),
-                         (0, 0, SCREEN_WIDTH, self.HUD_HEIGHT))
+        pygame.draw.rect(
+            self.screen,
+            (15, 25, 35),
+            (0, 0, SCREEN_WIDTH, self.HUD_HEIGHT)
+        )
 
         self.screen.blit(
-            self.font.render(f"X ⏱ {self._format_time(self.game.time_left['X'])}", True, (220, 230, 240)),
+            self.font.render(
+                f"X ⏱ {self._format_time(self.game.time_left['X'])}",
+                True,
+                (220, 230, 240)
+            ),
             (20, 20)
         )
 
         self.screen.blit(
-            self.big_font.render(f"Lượt: {self.game.current_player}", True, (220, 230, 240)),
+            self.big_font.render(
+                f"Lượt: {self.game.current_player}",
+                True,
+                (220, 230, 240)
+            ),
             (SCREEN_WIDTH // 2 - 70, 18)
         )
 
         self.screen.blit(
-            self.font.render(f"O ⏱ {self._format_time(self.game.time_left['O'])}", True, (220, 230, 240)),
+            self.font.render(
+                f"O ⏱ {self._format_time(self.game.time_left['O'])}",
+                True,
+                (220, 230, 240)
+            ),
             (SCREEN_WIDTH - 200, 20)
         )
 
     def _draw_board(self):
-        pygame.draw.rect(self.screen, (24, 40, 56),
-                         (self.board_x, self.board_y, self.board_size, self.board_size), border_radius=10)
+        pygame.draw.rect(
+            self.screen,
+            (24, 40, 56),
+            (self.board_x, self.board_y, self.board_size, self.board_size),
+            border_radius=10
+        )
 
         for i in range(BOARD_ROWS + 1):
             pygame.draw.line(
-                self.screen, (60, 80, 100),
+                self.screen,
+                (60, 80, 100),
                 (self.board_x, self.board_y + i * self.cell_size),
-                (self.board_x + self.board_size, self.board_y + i * self.cell_size)
+                (self.board_x + self.board_size,
+                 self.board_y + i * self.cell_size)
             )
 
         for i in range(BOARD_COLS + 1):
             pygame.draw.line(
-                self.screen, (60, 80, 100),
+                self.screen,
+                (60, 80, 100),
                 (self.board_x + i * self.cell_size, self.board_y),
-                (self.board_x + i * self.cell_size, self.board_y + self.board_size)
+                (self.board_x + i * self.cell_size,
+                 self.board_y + self.board_size)
             )
 
     def _draw_pieces(self):
@@ -243,14 +284,31 @@ class GameScreen:
                 pygame.draw.circle(self.screen, color, (cx, cy), radius)
 
                 if self.last_move == (r, c):
-                    pygame.draw.circle(self.screen, (255, 215, 0), (cx, cy), radius + 3, 2)
+                    pygame.draw.circle(
+                        self.screen,
+                        (255, 215, 0),
+                        (cx, cy),
+                        radius + 3,
+                        2
+                    )
 
                 if (r, c) in win_cells:
-                    pygame.draw.circle(self.screen, (255, 230, 150), (cx, cy), radius + 6, 3)
+                    pygame.draw.circle(
+                        self.screen,
+                        (255, 230, 150),
+                        (cx, cy),
+                        radius + 6,
+                        3
+                    )
 
     def _draw_panel(self):
-        pygame.draw.rect(self.screen, (30, 45, 60),
-                         (self.panel_x, self.panel_y, self.SIDE_PANEL_WIDTH, self.panel_h), border_radius=12)
+        pygame.draw.rect(
+            self.screen,
+            (30, 45, 60),
+            (self.panel_x, self.panel_y,
+             self.SIDE_PANEL_WIDTH, self.panel_h),
+            border_radius=12
+        )
 
         if self.btn_restart:
             self._draw_button(self.btn_restart, "Chơi lại")
